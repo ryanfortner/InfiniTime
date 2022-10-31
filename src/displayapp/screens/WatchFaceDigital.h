@@ -7,7 +7,6 @@
 #include "displayapp/screens/Screen.h"
 #include "components/datetime/DateTimeController.h"
 #include "components/ble/BleController.h"
-#include "displayapp/widgets/StatusIcons.h"
 
 namespace Pinetime {
   namespace Controllers {
@@ -28,13 +27,17 @@ namespace Pinetime {
                          Controllers::DateTime& dateTimeController,
                          Controllers::Battery& batteryController,
                          Controllers::Ble& bleController,
-                         Controllers::NotificationManager& notificationManager,
+                         Controllers::NotificationManager& notificatioManager,
                          Controllers::Settings& settingsController,
                          Controllers::HeartRateController& heartRateController,
                          Controllers::MotionController& motionController);
         ~WatchFaceDigital() override;
 
         void Refresh() override;
+
+        bool OnTouchEvent(TouchEvents event) override;
+        bool OnButtonPushed() override;
+        void UpdateSelected(lv_obj_t *object, lv_event_t event);
 
       private:
         uint8_t displayedHour = -1;
@@ -59,20 +62,38 @@ namespace Pinetime {
         lv_obj_t* label_time;
         lv_obj_t* label_time_ampm;
         lv_obj_t* label_date;
+        lv_obj_t* backgroundLabel;
+        lv_obj_t* batteryIcon;
+        lv_obj_t* bleIcon;
+        lv_obj_t* batteryValue;
+        lv_obj_t* batteryPlug;
         lv_obj_t* heartbeatIcon;
         lv_obj_t* heartbeatValue;
         lv_obj_t* stepIcon;
         lv_obj_t* stepValue;
         lv_obj_t* notificationIcon;
 
+        uint32_t savedTick = 0;
+        uint8_t optionsTotal;
+        lv_obj_t* container1;
+        lv_obj_t* settingsTitle;
+        lv_obj_t* cbOption[2];
+        lv_obj_t* btnSet;
+        lv_obj_t* lbl_btnSet;
+        lv_obj_t* btnClose;
+
         Controllers::DateTime& dateTimeController;
-        Controllers::NotificationManager& notificationManager;
+        Controllers::Battery& batteryController;
+        Controllers::Ble& bleController;
+        Controllers::NotificationManager& notificatioManager;
         Controllers::Settings& settingsController;
         Controllers::HeartRateController& heartRateController;
         Controllers::MotionController& motionController;
 
+        void CloseMenu();
+        void HideSettingsMenuItems(bool visible);
+
         lv_task_t* taskRefresh;
-        Widgets::StatusIcons statusIcons;
       };
     }
   }
